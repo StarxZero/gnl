@@ -12,21 +12,78 @@
 
 #include "get_next_line.h"
 
-char *trim(char **format)
+int ft_strlen(char *format)
 {
 	int i = 0;
+	if (!format)
+		return (0);
+	while (format[i] != '\0')
+		i++;
+	return (i);
+}
+
+char *ft_strjoin(char *one, char *two)
+{
+	int i = 0;
+	int j = 0;
 	char *temp;
-	if (!**format)
-		return (NULL);
-	temp = malloc(BUFFER_SIZE + 1);
-	while (**format != '\0')
+	temp = malloc(ft_strlen(one) + ft_strlen(two) + 1);
+	while (one[i] != '\0')
 	{
-		temp[i++] = **format;
-		if (*(*format)++ == '\n')
-			break ;
+		temp[i] = one[i];
+		i++;
 	}
-   	temp[i] = '\0';
+	while (two[j] != '\0')
+	{
+		temp[i++] = two[j++];
+	}
+	temp[i] = '\0';
 	return (temp);
+}
+
+int checking(char *value)
+{
+	int i = 0;
+	if (!value)
+	return (0);
+	while (value[i] != '\0')
+	{
+		if (value[i++] == '\n')
+			return (i);
+	}
+	return (0);
+}
+
+void ft_separate(char **main, char **sub)
+{
+    int i = 0;
+	int j = 0;
+	if (!**sub)
+	return ;
+        char *temp_main = malloc(ft_strlen(*sub) + 1);
+        char *temp_sub = malloc(ft_strlen(*sub) + 1);
+        while ((*sub)[i] != '\0')
+        {
+            temp_main[i] = (*sub)[i];
+			if (temp_main[i++] == '\n')
+				break ;
+        }
+        temp_main[i] = '\0';
+
+
+        while ((*sub)[i] != '\0')
+        {
+            temp_sub[j++] = (*sub)[i++];
+        }
+        temp_sub[j] = '\0';
+		
+        // Update the pointers in the calling function
+        free(*main);
+        *main = temp_main;
+        free(*sub);
+        *sub = temp_sub;
+	
+	
 }
 
 char *get_next_line(int fd)
@@ -35,28 +92,43 @@ char *get_next_line(int fd)
 	char *store;
 	char *temp;
 	ssize_t len = 1;
-
+	//int i = 0;
 	if (fd < 0 || BUFFER_SIZE < 0)
 		return (NULL);
 	if (!res)
 	{
-		store = malloc(BUFFER_SIZE + 1);
-		res = malloc(BUFFER_SIZE + 1);
-		res[BUFFER_SIZE + 1] = '\0';
-		while (len > 0)
-		{
-			len = read(fd, store, BUFFER_SIZE);
-			if (len == -1 || !*store)
-			{
-				break ;
-			}
-			store[len] = '\0';
-			temp = ft_strjoin(res, store);
-			free(res);
-			res = temp;
-		}
-		free(store);
+		res = malloc(1);
+		res[0] = '\0';
 	}
-	store = trim(&res);
+	store = calloc(BUFFER_SIZE + 1, 1);
+	while (len > 0 && checking(res) == 0)
+	{
+		len = read(fd, store, BUFFER_SIZE);
+		if (len <= 0 || !*store)
+		{
+			free(store);
+			store = NULL;
+			break;
+			//return (NULL);
+		}
+		store[len] = '\0';
+		//printf("%lu:%s\n",len,store);
+		//s
+		temp = ft_strjoin(res, store);
+		free(res);
+		res = temp;
+		//if (checking(res) != 0)
+		//	break ;
+				
+	}
+	// if (checking(res))
+	ft_separate(&store, &res);
+	// else
+	// {
+	// 	free(store);
+	// 	store = res;
+	// 	res = NULL;
+	// }
 	return (store);
 }
+

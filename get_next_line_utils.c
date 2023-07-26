@@ -9,7 +9,7 @@
 /*   Updated: 2023/07/18 10:31:13 by czheng-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+/*
 #include "get_next_line.h"
 
 int	ft_strlen(char *format)
@@ -18,7 +18,7 @@ int	ft_strlen(char *format)
 
 	i = 0;
 	if (!format)
-		return (i);
+		return (0);
 	while (format[i] != '\0')
 		i++;
 	return (i);
@@ -34,7 +34,7 @@ char	*ft_strjoin(char *str1, char *str2)
 	j = 0;
 	if (!str1 || !str2)
 		return (NULL);
-	format = malloc(ft_strlen(str1) + ft_strlen(str2) + 2);
+	format = calloc(ft_strlen(str1) + ft_strlen(str2) + 2, 1);
 	if (!format)
 		return (NULL);
 	while (str1[i] != '\0')
@@ -46,6 +46,7 @@ char	*ft_strjoin(char *str1, char *str2)
 	{
 		format[i++] = str2[j++];
 	}
-	format[i] = '\0';
+	//format[i] = '\0';
 	return (format);
 }
+*/

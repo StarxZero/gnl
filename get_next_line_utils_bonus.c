@@ -17,6 +17,8 @@ int	ft_strlen(char *format)
 	int	i;
 
 	i = 0;
+	if (!format)
+		return (0);
 	while (format[i] != '\0')
 		i++;
 	return (i);

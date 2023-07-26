@@ -21,7 +21,7 @@
 # endif
 
 char	*get_next_line(int fd);
-char	*ft_strjoin(char *str1, char *str2);
-int		ft_strlen(char *format);
+//char	*ft_strjoin(char *str1, char *str2);
+//int		ft_strlen(char *format);
 
 #endif

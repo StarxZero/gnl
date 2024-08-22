@@ -6,54 +6,70 @@
 /*   By: czheng-c <czheng-c@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 14:35:24 by czheng-c          #+#    #+#             */
-/*   Updated: 2023/07/06 16:40:58 by czheng-c         ###   ########.fr       */
+/*   Updated: 2023/07/31 09:32:47 by czheng-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-char	*reading(int fd, char *res, char *store, ssize_t len)
+void	fni(char **one, char *get)
 {
-	char	*temp;
+	free(*one);
+	*one = get;
+}
+
+void	ft_separate(char **main, char **sub)
+{
 	int		i;
+	int		j;
+	char	*temp_main;
+	char	*temp_sub;
 
 	i = 0;
-	while (len > 0)
+	j = 0;
+	if (!**sub)
 	{
-		len = read(fd, store, BUFFER_SIZE - BUFFER_SIZE + 1);
-		if (len == -1 || !*store)
-		{
-			free(res);
-			free(store);
-			return (NULL);
-		}
-		store[len] = '\0';
-		temp = ft_strjoin(res, store);
-		free(res);
-		res = temp;
-		if (res[i++] == '\n')
+		fni(*(&sub), NULL);
+		return ;
+	}
+	temp_main = ft_calloc(ft_strlen(*sub) + 1, 1);
+	temp_sub = ft_calloc(ft_strlen(*sub) + 1, 1);
+	while ((*sub)[i] != '\0')
+	{
+		temp_main[i] = (*sub)[i];
+		if (temp_main[i++] == '\n')
 			break ;
 	}
-	free(store);
-	return (res);
+	while ((*sub)[i] != '\0')
+		temp_sub[j++] = (*sub)[i++];
+	fni(*(&main), temp_main);
+	fni(*(&sub), temp_sub);
 }
 
 char	*get_next_line(int fd)
 {
+	static char	*res[5000];
 	char		*store;
-	static char	**res;
+	char		*temp;
 	ssize_t		len;
-	long		max_fd;
 
-	len = 1;
-	max_fd = sysconf(_SC_OPEN_MAX);
-	if (fd < 0 || BUFFER_SIZE < 0 || fd > max_fd)
+	if (fd < 0 || BUFFER_SIZE < 0)
 		return (NULL);
-	res = malloc(max_fd);
-	res[fd] = malloc(1);
-	res[fd][0] = '\0';
-	store = malloc(2);
-	res[fd] = reading(fd, res[fd], store, len);
-	free(res);
-	return (res[fd]);
+	if (!res[fd])
+		res[fd] = ft_calloc(1, 1);
+	store = ft_calloc(BUFFER_SIZE + 1, 1);
+	while (!ft_strchr(res[fd], '\n'))
+	{
+		len = read(fd, store, BUFFER_SIZE);
+		if (len <= 0 || !*store)
+		{
+			fni(&store, NULL);
+			break ;
+		}
+		store[len] = '\0';
+		temp = ft_strjoin(res[fd], store);
+		fni(&res[fd], temp);
+	}
+	ft_separate(&store, &res[fd]);
+	return (store);
 }

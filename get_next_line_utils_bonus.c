@@ -6,7 +6,7 @@
 /*   By: czheng-c <czheng-c@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:31:16 by czheng-c          #+#    #+#             */
-/*   Updated: 2023/07/06 10:18:05 by czheng-c         ###   ########.fr       */
+/*   Updated: 2023/07/29 10:28:17 by czheng-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,57 @@ int	ft_strlen(char *format)
 	return (i);
 }
 
-char	*ft_strjoin(char *dest, char *src)
+char	*ft_strjoin(char *one, char *two)
 {
+	char	*format;
 	int		i;
 	int		j;
-	char	*format;
 
 	i = 0;
 	j = 0;
-	format = malloc(ft_strlen(dest) + 2);
-	while (dest[i] != '\0')
+	format = ft_calloc(ft_strlen(one) + ft_strlen(two) + 1, 1);
+	if (!format)
+		return (NULL);
+	while (one[i] != '\0')
 	{
-		format[i] = dest[i];
+		format[i] = one[i];
 		i++;
 	}
-	while (src[j] != '\0')
-		format[i++] = src[j++];
+	while (two[j] != '\0')
+	{
+		format[i++] = two[j++];
+	}
 	format[i] = '\0';
 	return (format);
+}
+
+void	*ft_calloc(size_t count, size_t	size)
+{
+	char	*tst;
+	size_t	i;
+
+	i = 0;
+	if (size == SIZE_MAX)
+		return (0);
+	tst = (char *)malloc(count * size);
+	if (tst != NULL)
+		while (i < count * size)
+			tst[i++] = 0;
+	return (tst);
+}
+
+char	*ft_strchr(char *s, int c)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] == (char)c)
+			return ((char *)&s[i]);
+		i++;
+	}
+	if (c == 0 && s[i] == '\0')
+		return ((char *)&s[i]);
+	return (0);
 }
